@@ -1,14 +1,18 @@
 package br.com.fatec.FatecProjectRestAPI.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Product {
 
     @Id
@@ -40,5 +44,11 @@ public class Product {
     @Column(name = "date_created_product", nullable = false)
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dateCreatedProduct;
+
+    @PrePersist
+    private void prePersist() {
+        this.setDateCreatedProduct(LocalDate.now());
+        this.setPublishedProduct(false);
+    }
 
 }
