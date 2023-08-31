@@ -25,6 +25,7 @@ public class CustomerService {
 
     public Customer saveCustomer(Customer customer) {
         if (validateCustomer(customer)) {
+            encryptPassword(customer);
             return customerRepository.saveAndFlush(customer);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -65,6 +66,7 @@ public class CustomerService {
     public Customer updateCustomer(Customer customer) {
         if (validateCustomer(customer)) {
             if (findCustomerById(customer.getIdCustomer()) != null) {
+                encryptPassword(customer);
                 return customerRepository.saveAndFlush(customer);
             } else {
                 return null;
