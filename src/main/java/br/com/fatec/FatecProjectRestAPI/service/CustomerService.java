@@ -4,6 +4,7 @@ import br.com.fatec.FatecProjectRestAPI.entity.Customer;
 import br.com.fatec.FatecProjectRestAPI.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -72,6 +73,22 @@ public class CustomerService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Problemas ao alterar cliente, a renda salarial deve ser maior ou igual 0!");
         }
+    }
+
+    public void encryptPassword(Customer customer){
+        BCryptPasswordEncoder encrypt = new BCryptPasswordEncoder();
+        String encryptedPassword = null;
+        if (customer.getIdCustomer() == null) {
+            encryptedPassword = encrypt.encode(customer.getPasswordCustomer());
+            customer.setPasswordCustomer(encryptedPassword);
+        } else {
+            if (!customerRepository.findById(customer.getIdCustomer()).get().getPasswordCustomer()
+                    .equals(customer.getPasswordCustomer())) {
+                encryptedPassword = encrypt.encode(customer.getPasswordCustomer());
+                customer.setPasswordCustomer(encryptedPassword);
+            }
+        }
+
     }
 
 }
